@@ -1431,19 +1431,15 @@ function DogModel({
       <group position={[0, 0, -0.5]}>
         <mesh
           ref={tailRef}
-          position={[0, 0, -0.3]}
+          position={[0, -0.2, -0.01]}
           rotation={[0, 0, 0]}
           castShadow
         >
-          <cylinderGeometry args={[0.05, 0.1, 0.8]} />
+          <cylinderGeometry args={[0.05, 0.01, 0.8]} />
           <meshStandardMaterial color={color} />
         </mesh>
 
-        {/* Tail tip */}
-        <mesh position={[0, 0, -0.7]} castShadow>
-          <sphereGeometry args={[0.08, 16, 16]} />
-          <meshStandardMaterial color={secondaryColor} />
-        </mesh>
+       
       </group>
 
       {/* Render the active accessory */}
