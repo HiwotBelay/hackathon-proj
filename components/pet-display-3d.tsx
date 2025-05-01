@@ -162,7 +162,7 @@ export function PetDisplay3D({
     
   </div>
   <div className="flex items-center gap-2">
-    <span className="font-medium">Wait And watch the dynamic changes</span>
+    <span className="font-medium">Wait and watch the dynamic changes</span>
 
   </div>
 </div>
