@@ -159,6 +159,11 @@ export function PetDisplay3D({
   <div className="flex items-center gap-2">
     <span className="font-medium">Weather:</span>
     <span className="capitalize">{weather}</span>
+    
+  </div>
+  <div className="flex items-center gap-2">
+    <span className="font-medium">Wait And watch the dynamic changes</span>
+
   </div>
 </div>
     </div>
