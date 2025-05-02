@@ -116,14 +116,16 @@ export function PetDisplay3D({
         {/* New environment components */}
         <EnhancedGround theme={environmentTheme} />
 
-        {/* Scatter some trees around */}
-        <Tree position={[-5, 0, -3]} scale={1.2} />
-        <Tree position={[4, 0, -4]} scale={1} />
-        <Tree position={[6, 0, 2]} scale={0.8} />
+     {/* Scatter some trees around */}
+{/* Scatter some trees around */}
+<Tree position={[-5, -0.5, -3]} scale={1.2} />
+<Tree position={[4, -0.5, -4]} scale={1} />
+<Tree position={[6, -0.5, 2]} scale={0.8} />
 
-        {/* Add some mountains in the background */}
-        <Mountain position={[-10, 0, -15]} scale={3} color="#6b7280" />
-        <Mountain position={[8, 0, -12]} scale={2.5} color="#4b5563" />
+{/* Add some mountains in the background */}
+<Mountain position={[-10, 1.5, -15]} scale={3} color="#6b7280" />
+<Mountain position={[8, 1.5, -12]} scale={2.5} color="#4b5563" />
+
 
         <ContactShadows
           opacity={0.5}
@@ -170,6 +172,7 @@ export function PetDisplay3D({
 }
 
 // Tree component for environment
+// Tree component for environment
 const Tree = ({ position, scale = 1 }) => {
   return (
     <group position={position} scale={[scale, scale, scale]}>
@@ -193,8 +196,8 @@ const Tree = ({ position, scale = 1 }) => {
         <meshStandardMaterial color="#32CD32" roughness={0.8} />
       </mesh>
     </group>
-  );
-};
+  )
+}
 
 // Mountain component for environment
 const Mountain = ({ position, scale = 1, color = "#A9A9A9" }) => {
