@@ -81,7 +81,6 @@ export function PetDisplay3D({
     };
   }, []);
 
-
   // Simulate day/night cycle
   useEffect(() => {
     const interval = setInterval(() => {
@@ -150,22 +149,22 @@ export function PetDisplay3D({
       </Canvas>
 
       {/* Weather and time of day indicator */}
-    {/* Weather and time of day indicator */}
-<div className="absolute top-2 right-32 bg-white/70 backdrop-blur-sm px-3 py-2 rounded-lg shadow-md text-sm">
-  <div className="flex items-center gap-2">
-    <span className="font-medium">Time:</span>
-    <span className="capitalize">{timeOfDay}</span>
-  </div>
-  <div className="flex items-center gap-2">
-    <span className="font-medium">Weather:</span>
-    <span className="capitalize">{weather}</span>
-    
-  </div>
-  <div className="flex items-center gap-2">
-    <span className="font-medium">Wait and watch the dynamic changes</span>
-
-  </div>
-</div>
+      {/* Weather and time of day indicator */}
+      <div className="absolute top-2 right-32 bg-white/70 backdrop-blur-sm px-3 py-2 rounded-lg shadow-md text-sm">
+        <div className="flex items-center gap-2">
+          <span className="font-medium">Time:</span>
+          <span className="capitalize">{timeOfDay}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="font-medium">Weather:</span>
+          <span className="capitalize">{weather}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="font-medium">
+            Wait and watch the dynamic changes
+          </span>
+        </div>
+      </div>
     </div>
   );
 }
@@ -1438,8 +1437,6 @@ function DogModel({
           <cylinderGeometry args={[0.05, 0.01, 0.8]} />
           <meshStandardMaterial color={color} />
         </mesh>
-
-       
       </group>
 
       {/* Render the active accessory */}
@@ -1883,217 +1880,290 @@ function CatModel({
     </group>
   );
 }
-
-// Bird 3D Model
 function BirdModel({
-  color,
-  secondaryColor,
+// Bird 3D Model
+// Realistic Bird Model - Enhanced with blinking, facial expressions, and better connections
+  color = "blue",
   emotion,
-  blinking,
-  mouthOpen,
-}: {
-  color: string;
-  secondaryColor: string;
-  emotion: string;
-  blinking: boolean;
-  mouthOpen: boolean;
-}) {
-  // Create refs for animatable parts
-  const bodyRef = useRef<THREE.Mesh>(null);
-  const headRef = useRef<THREE.Mesh>(null);
-  const beakRef = useRef<THREE.Mesh>(null);
-  const leftWingRef = useRef<THREE.Mesh>(null);
-  const rightWingRef = useRef<THREE.Mesh>(null);
-  const tailRef = useRef<THREE.Mesh>(null);
+  onInteract,
+  isTalking = false,
+})  {
+  const group = useRef();
+  const [hovered, setHovered] = useState(false);
+  const [breathingScale, setBreathingScale] = useState(1);
+  const [wingFlap, setWingFlap] = useState(0);
+  const [headTurn, setHeadTurn] = useState(0);
+  const [tailWag, setTailWag] = useState(0);
+  const [beakOpen, setBeakOpen] = useState(0);
+  const [bodyBounce, setBodyBounce] = useState(0);
+  const [eyeBlink, setEyeBlink] = useState(0);
+  const [danceMoves, setDanceMoves] = useState(0);
 
-  // Animate parts based on emotion
+  // Color mapping
+  const colorMap = {
+    blue: "#4169E1",
+    red: "#DC143C",
+    yellow: "#FFD700",
+    green: "#32CD32",
+    white: "#F5F5F5",
+    black: "#2D2D2D",
+  };
+
+  const mainColor = colorMap[color] || colorMap.blue;
+  const secondaryColor = hovered
+    ? new THREE.Color(mainColor).offsetHSL(0, 0.1, 0.1).getStyle()
+    : mainColor;
+  const accentColor = new THREE.Color(mainColor)
+    .offsetHSL(0.1, 0.2, 0.1)
+    .getStyle();
+  const lightColor = new THREE.Color(mainColor)
+    .offsetHSL(0, -0.1, 0.2)
+    .getStyle();
+
+  // Blinking effect
+  useEffect(() => {
+    const blinkInterval = setInterval(() => {
+      // Quick blink animation
+      setEyeBlink(1);
+      setTimeout(() => setEyeBlink(0), 150);
+    }, Math.random() * 3000 + 2000); // Random blink between 2-5 seconds
+
+    return () => clearInterval(blinkInterval);
+  }, []);
+
+  // Talking beak animation
+  useEffect(() => {
+    if (isTalking) {
+      const talkingInterval = setInterval(() => {
+        setBeakOpen(Math.random() * 0.3 + 0.1); // Random beak movement
+      }, 150);
+
+      return () => clearInterval(talkingInterval);
+    }
+  }, [isTalking]);
+
+  // Animations based on emotion
   useFrame((state) => {
-    if (
-      !bodyRef.current ||
-      !headRef.current ||
-      !beakRef.current ||
-      !leftWingRef.current ||
-      !rightWingRef.current ||
-      !tailRef.current
-    )
-      return;
+    if (group.current) {
+      const time = state.clock.getElapsedTime();
 
-    // Wing animation based on emotion
-    if (emotion === "excited" || emotion === "dancing") {
-      leftWingRef.current.rotation.z =
-        -Math.PI / 4 + Math.sin(state.clock.elapsedTime * 10) * 0.5;
-      rightWingRef.current.rotation.z =
-        Math.PI / 4 - Math.sin(state.clock.elapsedTime * 10) * 0.5;
-    } else if (emotion === "happy") {
-      leftWingRef.current.rotation.z =
-        -Math.PI / 8 + Math.sin(state.clock.elapsedTime * 3) * 0.1;
-      rightWingRef.current.rotation.z =
-        Math.PI / 8 - Math.sin(state.clock.elapsedTime * 3) * 0.1;
-    } else {
-      leftWingRef.current.rotation.z = -Math.PI / 8;
-      rightWingRef.current.rotation.z = Math.PI / 8;
-    }
+      // Basic breathing animation
+      const breathing = Math.sin(time * 2) * 0.015;
+      setBreathingScale(1 + breathing);
 
-    // Beak animation
-    if (mouthOpen || emotion === "singing" || emotion === "laughing") {
-      beakRef.current.rotation.x =
-        -0.2 + Math.sin(state.clock.elapsedTime * 8) * 0.2;
-    } else {
-      beakRef.current.rotation.x = 0;
-    }
+      // Wing flapping
+      let flapSpeed = 0.5; // default speed (idle)
+      let flapAmplitude = 0.1; // default amplitude (idle)
 
-    // Head animation
-    if (emotion === "curious") {
-      headRef.current.rotation.z =
-        Math.sin(state.clock.elapsedTime * 1.5) * 0.2;
-    } else if (emotion === "sad") {
-      headRef.current.rotation.x = -0.2;
-    } else if (emotion === "excited" || emotion === "happy") {
-      headRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 3) * 0.2;
-    }
+      if (emotion === "excited" || emotion === "happy") {
+        flapSpeed = 8;
+        flapAmplitude = 0.8;
+      } else if (emotion === "alert") {
+        flapSpeed = 4;
+        flapAmplitude = 0.4;
+      } else if (emotion === "sad") {
+        flapSpeed = 0.3;
+        flapAmplitude = 0.05; // Droopy wings when sad
+      }
 
-    // Tail animation
-    if (emotion === "happy" || emotion === "excited") {
-      tailRef.current.rotation.x =
-        Math.PI / 6 + Math.sin(state.clock.elapsedTime * 5) * 0.2;
-    } else {
-      tailRef.current.rotation.x = Math.PI / 6;
+      setWingFlap(Math.sin(time * flapSpeed) * flapAmplitude);
+
+      // Head turning
+      if (emotion === "curious" || emotion === "thinking") {
+        setHeadTurn(Math.sin(time * 0.8) * 0.5);
+      } else if (emotion === "sad") {
+        setHeadTurn(-0.2 + Math.sin(time * 0.4) * 0.1); // Drooping head for sadness
+      } else {
+        setHeadTurn(Math.sin(time * 0.4) * 0.2);
+      }
+
+      // Tail wagging
+      setTailWag(Math.sin(time * 2) * 0.2);
+
+      // Beak opening (if not talking)
+      if (!isTalking) {
+        if (emotion === "excited" || emotion === "happy") {
+          setBeakOpen(0.2 + Math.sin(time * 4) * 0.1);
+        } else if (emotion === "hungry") {
+          setBeakOpen(0.3 + Math.sin(time * 2) * 0.1);
+        } else if (emotion === "sad") {
+          setBeakOpen(-0.1 + Math.sin(time * 0.5) * 0.05); // Slight frown for sadness
+        } else {
+          setBeakOpen(Math.sin(time * 0.5) * 0.05);
+        }
+      }
+
+      // Body bouncing
+      if (emotion === "dancing") {
+        // Special dance animation
+        setBodyBounce(Math.sin(time * 5) * 0.05);
+        setDanceMoves(Math.sin(time * 2) * 0.5);
+      } else if (emotion === "sad") {
+        setBodyBounce(Math.sin(time * 0.5) * 0.01); // Less bouncy when sad
+      } else {
+        setBodyBounce(Math.sin(time * 1) * 0.01);
+      }
+
+      // Apply animations
+      if (group.current) {
+        if (emotion === "dancing") {
+          // Dancing animation
+          group.current.position.y = bodyBounce;
+          group.current.rotation.y = danceMoves * 0.5;
+          group.current.rotation.z = Math.sin(time * 3) * 0.1;
+        } else {
+          group.current.position.y = bodyBounce;
+          group.current.rotation.y = 0;
+          group.current.rotation.z = 0;
+        }
+        group.current.scale.set(breathingScale, breathingScale, breathingScale);
+      }
     }
   });
 
   return (
-    <group>
-      {/* Body */}
-      <mesh ref={bodyRef} position={[0, 0, 0]} scale={[1, 1.2, 1.4]} castShadow>
-        <sphereGeometry args={[0.5, 32, 32]} />
-        <meshStandardMaterial color={color} />
+    <group
+      ref={group}
+      onClick={onInteract}
+      onPointerOver={() => setHovered(true)}
+      onPointerOut={() => setHovered(false)}
+      position={[0, -0.3, 0]} // Position bird appropriately
+    >
+      {/* Body - oval shaped */}
+      <mesh position={[0, 0.2, 0]} scale={[0.7, 0.8, 0.9]}>
+        <sphereGeometry args={[0.25, 24, 16]} />
+        <meshStandardMaterial color={mainColor} roughness={0.8} />
       </mesh>
 
-      {/* Head - connected to body with proper positioning */}
-      <group ref={headRef} position={[0, 0.7, 0.4]}>
-        <mesh castShadow>
-          <sphereGeometry args={[0.4, 32, 32]} />
-          <meshStandardMaterial color={color} />
+      {/* Chest/breast - lighter color */}
+      <mesh position={[0, 0.15, 0.15]} scale={[0.65, 0.7, 0.5]}>
+        <sphereGeometry args={[0.25, 24, 16]} />
+        <meshStandardMaterial color={lightColor} roughness={0.7} />
+      </mesh>
+
+      {/* Head */}
+      <group position={[0, 0.5, 0.15]} rotation={[0, headTurn, 0]}>
+        {/* Main head - round */}
+        <mesh scale={[0.7, 0.7, 0.7]}>
+          <sphereGeometry args={[0.2, 24, 16]} />
+          <meshStandardMaterial color={mainColor} roughness={0.8} />
         </mesh>
 
-        {/* Eyes with expressions */}
-        <group position={[0, 0.1, 0.3]}>
-          {/* Left eye */}
-          <mesh
-            position={[-0.15, 0, 0]}
-            scale={blinking ? [1, 0.1, 1] : [1, 1, 1]}
-            castShadow
-          >
-            <sphereGeometry args={[0.06, 16, 16]} />
-            <meshStandardMaterial color="black" />
+        {/* Beak - animated for talking */}
+        <group position={[0, 0, 0.15]}>
+          {/* Upper beak */}
+          <mesh position={[0, 0, 0]} rotation={[-beakOpen / 2, 0, 0]}>
+            <coneGeometry
+              args={[0.05, 0.15, 4]}
+              rotation={[0, Math.PI / 4, 0]}
+            />
+            <meshStandardMaterial color="#FF8C00" roughness={0.5} />
           </mesh>
 
-          {/* Right eye */}
-          <mesh
-            position={[0.15, 0, 0]}
-            scale={blinking ? [1, 0.1, 1] : [1, 1, 1]}
-            castShadow
-          >
-            <sphereGeometry args={[0.06, 16, 16]} />
-            <meshStandardMaterial color="black" />
+          {/* Lower beak */}
+          <mesh position={[0, -0.03, 0]} rotation={[beakOpen, 0, 0]}>
+            <coneGeometry
+              args={[0.04, 0.12, 4]}
+              rotation={[0, Math.PI / 4, 0]}
+            />
+            <meshStandardMaterial color="#FF8C00" roughness={0.5} />
           </mesh>
-
-          {/* Eye expressions based on emotion */}
-          {(emotion === "happy" || emotion === "excited") && (
-            <>
-              <mesh
-                position={[-0.15, -0.06, 0.01]}
-                rotation={[0, 0, Math.PI / 4]}
-                castShadow
-              >
-                <cylinderGeometry args={[0.01, 0.01, 0.04]} />
-                <meshStandardMaterial color="white" />
-              </mesh>
-              <mesh
-                position={[0.15, -0.06, 0.01]}
-                rotation={[0, 0, -Math.PI / 4]}
-                castShadow
-              >
-                <cylinderGeometry args={[0.01, 0.01, 0.04]} />
-                <meshStandardMaterial color="white" />
-              </mesh>
-            </>
-          )}
         </group>
 
-        {/* Beak with animation */}
-        <mesh
-          ref={beakRef}
-          position={[0, -0.05, 0.4]}
-          rotation={[mouthOpen ? -0.2 : 0, 0, 0]}
-          castShadow
-        >
-          <coneGeometry args={[0.1, 0.3, 4]} />
-          <meshStandardMaterial color={secondaryColor} />
+        {/* Eyes with blinking */}
+        <group position={[-0.08, 0.05, 0.1]}>
+          {/* Eye white */}
+          <mesh scale={[1, 1 - eyeBlink, 1]}>
+            <sphereGeometry args={[0.03, 16, 16]} />
+            <meshStandardMaterial color="#000000" roughness={0.2} />
+          </mesh>
+          {/* Pupil */}
+          <mesh
+            position={[0, 0, 0.01]}
+            scale={[0.6, 0.6 * (1 - eyeBlink), 0.6]}
+          >
+            <sphereGeometry args={[0.02, 16, 16]} />
+            <meshStandardMaterial color="#000000" roughness={0.2} />
+          </mesh>
+        </group>
+
+        <group position={[0.08, 0.05, 0.1]}>
+          {/* Eye white */}
+          <mesh scale={[1, 1 - eyeBlink, 1]}>
+            <sphereGeometry args={[0.03, 16, 16]} />
+            <meshStandardMaterial color="#000000" roughness={0.2} />
+          </mesh>
+          {/* Pupil */}
+          <mesh
+            position={[0, 0, 0.01]}
+            scale={[0.6, 0.6 * (1 - eyeBlink), 0.6]}
+          >
+            <sphereGeometry args={[0.02, 16, 16]} />
+            <meshStandardMaterial color="#000000" roughness={0.2} />
+          </mesh>
+        </group>
+      </group>
+
+      {/* Wings - connected to body */}
+      {/* Left Wing */}
+      <group position={[-0.2, 0.2, 0]} rotation={[0, 0, wingFlap]}>
+        <mesh position={[-0.15, 0, 0]} scale={[1, 0.2, 0.8]}>
+          <sphereGeometry args={[0.2, 16, 12]} />
+          <meshStandardMaterial color={mainColor} roughness={0.8} />
+        </mesh>
+        <mesh position={[-0.3, 0, 0]} scale={[0.8, 0.15, 0.6]}>
+          <sphereGeometry args={[0.2, 16, 12]} />
+          <meshStandardMaterial color={accentColor} roughness={0.8} />
         </mesh>
       </group>
 
-      {/* Neck - connecting head and body */}
-      <mesh position={[0, 0.35, 0.2]} rotation={[Math.PI / 6, 0, 0]} castShadow>
-        <cylinderGeometry args={[0.2, 0.25, 0.3]} />
-        <meshStandardMaterial color={color} />
-      </mesh>
-
-      {/* Wings with proper attachment */}
-      <mesh
-        ref={leftWingRef}
-        position={[-0.5, 0, 0]}
-        rotation={[0, 0, -Math.PI / 8]}
-        scale={[0.1, 0.4, 0.3]}
-        castShadow
-      >
-        <sphereGeometry args={[1, 32, 32]} />
-        <meshStandardMaterial color={color} />
-      </mesh>
-      <mesh
-        ref={rightWingRef}
-        position={[0.5, 0, 0]}
-        rotation={[0, 0, Math.PI / 8]}
-        scale={[0.1, 0.4, 0.3]}
-        castShadow
-      >
-        <sphereGeometry args={[1, 32, 32]} />
-        <meshStandardMaterial color={color} />
-      </mesh>
-
-      {/* Tail feathers with animation */}
-      <mesh
-        ref={tailRef}
-        position={[0, -0.5, -0.5]}
-        rotation={[Math.PI / 6, 0, 0]}
-        castShadow
-      >
-        <boxGeometry args={[0.4, 0.1, 0.3]} />
-        <meshStandardMaterial color={color} />
-      </mesh>
-
-      {/* Feet - properly connected to body */}
-      <group position={[0, -0.8, 0]}>
-        {/* Left foot */}
-        <mesh position={[-0.2, 0, 0.1]} rotation={[0, 0, 0]} castShadow>
-          <cylinderGeometry args={[0.03, 0.03, 0.2]} />
-          <meshStandardMaterial color={secondaryColor} />
+      {/* Right Wing */}
+      <group position={[0.2, 0.2, 0]} rotation={[0, 0, -wingFlap]}>
+        <mesh position={[0.15, 0, 0]} scale={[1, 0.2, 0.8]}>
+          <sphereGeometry args={[0.2, 16, 12]} />
+          <meshStandardMaterial color={mainColor} roughness={0.8} />
         </mesh>
-        <mesh position={[-0.2, -0.1, 0.2]} rotation={[0, 0, 0]} castShadow>
-          <boxGeometry args={[0.1, 0.02, 0.15]} />
-          <meshStandardMaterial color={secondaryColor} />
-        </mesh>
-
-        {/* Right foot */}
-        <mesh position={[0.2, 0, 0.1]} rotation={[0, 0, 0]} castShadow>
-          <cylinderGeometry args={[0.03, 0.03, 0.2]} />
-          <meshStandardMaterial color={secondaryColor} />
-        </mesh>
-        <mesh position={[0.2, -0.1, 0.2]} rotation={[0, 0, 0]} castShadow>
-          <boxGeometry args={[0.1, 0.02, 0.15]} />
-          <meshStandardMaterial color={secondaryColor} />
+        <mesh position={[0.3, 0, 0]} scale={[0.8, 0.15, 0.6]}>
+          <sphereGeometry args={[0.2, 16, 12]} />
+          <meshStandardMaterial color={accentColor} roughness={0.8} />
         </mesh>
       </group>
+
+      {/* Tail - connected to body */}
+      <group position={[0, 0.15, -0.25]} rotation={[0, tailWag, 0]}>
+        <mesh scale={[0.7, 0.2, 0.5]}>
+          <sphereGeometry args={[0.2, 16, 12]} />
+          <meshStandardMaterial color={accentColor} roughness={0.8} />
+        </mesh>
+      </group>
+
+      {/* Legs */}
+      {/* Left Leg */}
+      <mesh position={[-0.07, -0.1, 0]}>
+        <cylinderGeometry args={[0.02, 0.02, 0.2, 8]} />
+        <meshStandardMaterial color="#FF8C00" roughness={0.7} />
+      </mesh>
+
+      {/* Right Leg */}
+      <mesh position={[0.07, -0.1, 0]}>
+        <cylinderGeometry args={[0.02, 0.02, 0.2, 8]} />
+        <meshStandardMaterial color="#FF8C00" roughness={0.7} />
+      </mesh>
+
+      {/* Feet */}
+      {/* Left Foot */}
+      <mesh position={[-0.07, -0.2, 0.03]}>
+        <boxGeometry args={[0.06, 0.02, 0.08]} />
+        <meshStandardMaterial color="#FF8C00" roughness={0.7} />
+      </mesh>
+
+      {/* Right Foot */}
+      <mesh position={[0.07, -0.2, 0.03]}>
+        <boxGeometry args={[0.06, 0.02, 0.08]} />
+        <meshStandardMaterial color="#FF8C00" roughness={0.7} />
+      </mesh>
+
+ 
     </group>
   );
 }
