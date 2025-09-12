@@ -11,7 +11,7 @@ Interact with your digital pet like never before:
 - 🎨 **Customize appearance**: Pick colors and accessories,
 - 🧠 **Emotion-aware**: Reacts with joy, sadness, sleepiness, and more,
 - 🗣️ **Voice & text interaction**: Real-time communication with lip sync,
-- 🌦️ **Dynamic environment**: Day/Night cycles, weather effects
+- 🌦️ **Dynamic environment**: Day/Night cycles, weather effects,
 - 🎮 **Mini-games & more**: Entertain your pet and yourself!
 
 ---
