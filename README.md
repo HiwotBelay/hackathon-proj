@@ -9,7 +9,7 @@ Welcome to the **Digital Pet Twin Challenge**! This project delivers a **fun and
 Interact with your digital pet like never before:
 - 🐶 **Choose your pet**: Dog or Cat or bird,
 - 🎨 **Customize appearance**: Pick colors and accessories,
-- 🧠 **Emotion-aware**: Reacts with joy, sadness, sleepiness, and more
+- 🧠 **Emotion-aware**: Reacts with joy, sadness, sleepiness, and more,
 - 🗣️ **Voice & text interaction**: Real-time communication with lip sync
 - 🌦️ **Dynamic environment**: Day/Night cycles, weather effects
 - 🎮 **Mini-games & more**: Entertain your pet and yourself!
