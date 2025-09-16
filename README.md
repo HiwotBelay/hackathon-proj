@@ -19,7 +19,7 @@ Interact with your digital pet like never before:
 ## 🎮 Features
 
 ### 🐕‍🦺 3D Pet Model
-- **Pet Options**: Choose between a cat or a dog or a bird,
+- **Pet Options**: Choose between a cat or a dog or a bird
 - **Custom Colors**: Personalize your pet’s appearance,
 - **Emotions**: See your pet express happiness, sadness, excitement, and more!
 
