@@ -24,7 +24,7 @@ Interact with your digital pet like never before:
 - **Emotions**: See your pet express happiness, sadness, excitement, and more
 
 ### 🌄 Interactive Environment
-- **Day-Night Cycle**: Watch the time shift from day to evening to night,
+- **Day-Night Cycle**: Watch the time shift from day to evening to night
 - **Weather Changes**: Enjoy sunny days, rain, and snow,
 - **Natural Scenery**: Lush green landscapes, trees, and mountains bring the world to life.
 
