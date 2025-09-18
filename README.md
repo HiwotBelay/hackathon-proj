@@ -1,6 +1,6 @@
 # 🐾 Digital Pet Twin Challenge: 3D Pet Experience
 
-Welcome to the **Digital Pet Twin Challenge**! This project delivers a **fun and interactive 3D virtual pet experience**, where users can engage with a customizable cat or dog or bird in a beautifully animated world...
+Welcome to the **Digital Pet Twin Challenge**! This project delivers a **fun and interactive 3D virtual pet experience**, where users can engage with a customizable cat or dog or bird in a beautifully animated world.
 ---
 
 ## ✨ Project Highlights
